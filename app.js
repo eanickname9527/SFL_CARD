@@ -185,7 +185,7 @@ function createCardHTML(card, isSimMode = false) {
                     ${attrsHtml}
                 </div>
                 ${isSimMode ? `
-                    <select class="level-selector" onclick="event.stopPropagation()" ${isEquipped ? 'disabled' : ''}>
+                    <select class="level-selector" onchange="updateCardDisplay(this, '${card.id}')" onclick="event.stopPropagation()" ${isEquipped ? 'disabled' : ''}>
                         ${levelOptions}
                     </select>
                     <button class="equip-btn" onclick="equipCard('${card.id}', event)" ${isDisabled ? 'disabled' : ''}>
