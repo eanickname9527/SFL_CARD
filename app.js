@@ -79,7 +79,7 @@ function parseCardData(text) {
             if (currentCard) {
                 let parts = line.split('\t').map(s => s.trim()).filter(s => s);
                 let level = parts.shift();
-
+                
                 // Extra safety: if the last element is the comma separated list
                 if (parts.length > currentCard.attributes.length) {
                     parts.pop();
@@ -125,7 +125,7 @@ function createCardHTML(card, isSimMode = false) {
     const defaultLevel = card.levels.length - 1; // Default to max level (usually Lv.5)
     const currentLvlData = card.levels[defaultLevel].data;
     const isEquipped = equippedCards.some(ec => ec.card.id === card.id);
-
+    
     let attrsHtml = '';
     for (const [attr, val] of Object.entries(currentLvlData)) {
         attrsHtml += `
@@ -177,7 +177,7 @@ function renderDexCards() {
     const order = sortOrder.value;
 
     dexCardsContainer.innerHTML = '';
-    let filteredCards = cardsData.filter(card =>
+    let filteredCards = cardsData.filter(card => 
         filterAttr === 'all' || card.attributes.includes(filterAttr)
     );
 
@@ -190,10 +190,10 @@ function renderDexCards() {
                 const valStr = data[sortBy] || "0";
                 return parseFloat(valStr.replace('%', '')) || 0;
             };
-
+            
             const valA = getVal(a);
             const valB = getVal(b);
-
+            
             return order === 'asc' ? valA - valB : valB - valA;
         });
     }
@@ -213,8 +213,8 @@ function renderSimCards() {
     const order = simSortOrder.value;
 
     simCardsContainer.innerHTML = '';
-
-    let filteredCards = cardsData.filter(card =>
+    
+    let filteredCards = cardsData.filter(card => 
         filterAttr === 'all' || card.attributes.includes(filterAttr)
     );
 
@@ -237,13 +237,13 @@ function renderSimCards() {
     });
 }
 
-window.updateCardDisplay = function (selectElem, cardId) {
+window.updateCardDisplay = function(selectElem, cardId) {
     const card = cardsData.find(c => c.id === cardId);
     if (!card) return;
-
+    
     const lvlIdx = parseInt(selectElem.value);
     const lvlData = card.levels[lvlIdx].data;
-
+    
     const attrsContainer = selectElem.parentElement.querySelector('.attrs-container');
     let attrsHtml = '';
     for (const [attr, val] of Object.entries(lvlData)) {
@@ -258,9 +258,9 @@ window.updateCardDisplay = function (selectElem, cardId) {
 }
 
 // Simulator Logic
-window.equipCard = function (cardId, event) {
+window.equipCard = function(cardId, event) {
     event.stopPropagation();
-
+    
     if (equippedCards.length >= MAX_SLOTS) {
         alert('最多只能裝備 5 張卡片！');
         return;
@@ -275,7 +275,7 @@ window.equipCard = function (cardId, event) {
     const cardElem = event.target.closest('.card');
     const lvlSelect = cardElem.querySelector('.level-selector');
     const lvlIdx = parseInt(lvlSelect.value);
-
+    
     const card = cardsData.find(c => c.id === cardId);
     if (card) {
         equippedCards.push({
@@ -291,7 +291,7 @@ window.equipCard = function (cardId, event) {
     }
 }
 
-window.removeCard = function (instanceId) {
+window.removeCard = function(instanceId) {
     equippedCards = equippedCards.filter(c => c.instanceId !== instanceId);
     renderSlots();
     updateTotalStats();
@@ -300,7 +300,7 @@ window.removeCard = function (instanceId) {
 
 function renderSlots() {
     slotsContainer.innerHTML = '';
-
+    
     for (let i = 0; i < MAX_SLOTS; i++) {
         if (i < equippedCards.length) {
             const equipped = equippedCards[i];
@@ -330,13 +330,13 @@ function updateTotalStats() {
     }
 
     const totals = {};
-
+    
     equippedCards.forEach(equipped => {
         for (const [attr, valStr] of Object.entries(equipped.data)) {
             // Handle percentages and regular numbers
             let isPercentage = valStr.includes('%');
             let numVal = parseFloat(valStr.replace('%', ''));
-
+            
             if (!isNaN(numVal)) {
                 if (!totals[attr]) {
                     totals[attr] = { val: 0, isPercentage: isPercentage };
@@ -349,11 +349,11 @@ function updateTotalStats() {
     });
 
     totalStatsContainer.innerHTML = '';
-
+    
     // Sort attributes by name or let object keys order naturally
     for (const [attr, data] of Object.entries(totals)) {
         let displayVal = data.isPercentage ? data.val.toFixed(1) + '%' : Math.round(data.val * 100) / 100;
-
+        
         totalStatsContainer.insertAdjacentHTML('beforeend', `
             <div class="stat-item">
                 <span class="attr-name">${attr}</span>
@@ -370,7 +370,7 @@ function setupEventListeners() {
         btn.addEventListener('click', () => {
             tabBtns.forEach(b => b.classList.remove('active'));
             viewSections.forEach(v => v.classList.remove('active'));
-
+            
             btn.classList.add('active');
             document.getElementById(btn.dataset.target).classList.add('active');
         });
