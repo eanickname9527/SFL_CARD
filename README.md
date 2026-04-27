@@ -1,6 +1,6 @@
 # SFL_CARD
 <br>
-"AI project"<br>
+"Create by AI"<br>
 這是個免費網頁遊戲SFL-GAME的第三方卡片模擬器，<br>
 遊戲本體在 https://sfl-rpg.com/<br>
 遊戲頁面裡面有遊戲作者Discord的邀請連結，<br>
@@ -8,12 +8,12 @@
 <br>
 <br>
 
-![](/scrennshot/card_html.jpg)
+![卡片模擬器示意圖](/scrennshot/card_html.jpg)
 
 <br>
 <br>
 
-![](/scrennshot/game_main.jpg)
+![遊戲本體示意圖](/scrennshot/game_main.jpg)
 
 <br>
 <br>
