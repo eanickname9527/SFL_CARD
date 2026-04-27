@@ -146,7 +146,7 @@ function getTitleColor(card) {
     return 'inherit';
 }
 
-function createCardHTML(card, isSimMode = false) {
+function createCardHTML(card, isSimMode = false, filterAttr = 'all', sortAttr = 'original') {
     const defaultLevel = card.levels.length - 1; // Default to max level (usually Lv.5)
     const currentLvlData = card.levels[defaultLevel].data;
     const isEquipped = equippedCards.some(ec => ec.card.id === card.id);
@@ -156,9 +156,16 @@ function createCardHTML(card, isSimMode = false) {
     
     let attrsHtml = '';
     for (const [attr, val] of Object.entries(currentLvlData)) {
+        let colorStyle = '';
+        if (attr === filterAttr) {
+            colorStyle = 'style="color: #FFD306; font-weight: bold;"';
+        } else if (attr === sortAttr) {
+            colorStyle = 'style="color: #00BB00; font-weight: bold;"';
+        }
+
         attrsHtml += `
             <div class="attr-row">
-                <span class="attr-name">${attr}</span>
+                <span class="attr-name" ${colorStyle}>${attr}</span>
                 <span class="attr-val">${val}</span>
             </div>
         `;
@@ -229,7 +236,7 @@ function renderDexCards() {
     }
 
     filteredCards.forEach(card => {
-        dexCardsContainer.insertAdjacentHTML('beforeend', createCardHTML(card, false));
+        dexCardsContainer.insertAdjacentHTML('beforeend', createCardHTML(card, false, filterAttr, sortBy));
     });
 
     if (filteredCards.length === 0) {
@@ -263,7 +270,7 @@ function renderSimCards() {
     }
 
     filteredCards.forEach(card => {
-        simCardsContainer.insertAdjacentHTML('beforeend', createCardHTML(card, true));
+        simCardsContainer.insertAdjacentHTML('beforeend', createCardHTML(card, true, filterAttr, sortBy));
     });
 }
 
@@ -274,12 +281,23 @@ window.updateCardDisplay = function(selectElem, cardId) {
     const lvlIdx = parseInt(selectElem.value);
     const lvlData = card.levels[lvlIdx].data;
     
+    const isSimView = selectElem.closest('#sim-view') !== null;
+    const filter = isSimView ? simAttrFilter.value : attrFilter.value;
+    const sort = isSimView ? simSortAttr.value : sortAttr.value;
+
     const attrsContainer = selectElem.parentElement.querySelector('.attrs-container');
     let attrsHtml = '';
     for (const [attr, val] of Object.entries(lvlData)) {
+        let colorStyle = '';
+        if (attr === filter) {
+            colorStyle = 'style="color: #FFD306; font-weight: bold;"';
+        } else if (attr === sort) {
+            colorStyle = 'style="color: #00BB00; font-weight: bold;"';
+        }
+
         attrsHtml += `
             <div class="attr-row">
-                <span class="attr-name">${attr}</span>
+                <span class="attr-name" ${colorStyle}>${attr}</span>
                 <span class="attr-val">${val}</span>
             </div>
         `;
