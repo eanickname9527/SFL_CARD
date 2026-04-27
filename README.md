@@ -5,9 +5,13 @@
 遊戲頁面裡面有作者Discoard的邀請連結。<br>
 <br>
 <br>
+
 ![](/scrennshot/card_html.jpg)
+
 <br>
 <br>
+
 ![](/scrennshot/game_main.jpg)
+
 <br>
 <br>
