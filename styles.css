@@ -160,6 +160,11 @@ select:focus {
     border-color: var(--primary);
 }
 
+select option {
+    background-color: #1e293b;
+    color: var(--text-main);
+}
+
 /* Cards Grid */
 .cards-grid {
     display: grid;
