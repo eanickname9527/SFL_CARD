@@ -354,12 +354,19 @@ function renderSlots() {
         if (i < equippedCards.length) {
             const equipped = equippedCards[i];
             const titleColor = getTitleColor(equipped.card);
+            
+            // Format attributes string
+            const attrStrings = Object.entries(equipped.data).map(([attr, val]) => `${attr}: ${val}`);
+            const attrText = attrStrings.join(', ');
 
             slotsContainer.insertAdjacentHTML('beforeend', `
                 <div class="slot filled">
                     <div class="slot-info">
                         <span class="slot-name" style="color: ${titleColor};">${equipped.card.name}</span>
-                        <span class="slot-level">${equipped.levelName}</span>
+                        <div class="slot-details">
+                            <span class="slot-level">${equipped.levelName}</span>
+                            <span class="slot-attrs">${attrText}</span>
+                        </div>
                     </div>
                     <button class="remove-btn" onclick="removeCard('${equipped.instanceId}')">移除</button>
                 </div>

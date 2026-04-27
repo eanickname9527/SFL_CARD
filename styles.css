@@ -327,6 +327,23 @@ select option {
 
 .slot-level {
     font-size: 0.85rem;
+    color: var(--primary);
+    background: rgba(99, 102, 241, 0.1);
+    padding: 0.1rem 0.4rem;
+    border-radius: 4px;
+    font-weight: 600;
+}
+
+.slot-details {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-top: 0.25rem;
+}
+
+.slot-attrs {
+    font-size: 0.85rem;
     color: var(--text-muted);
 }
 
