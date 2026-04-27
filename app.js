@@ -41,12 +41,26 @@ async function init() {
 function parseCardData(text) {
     const lines = text.split('\n');
     let currentCard = null;
+    let currentChapter = null;
 
     for (let i = 0; i < lines.length; i++) {
         let line = lines[i].trim();
         if (!line) continue;
 
         if (line.startsWith('[')) {
+            // Check for chapter start like [第一章]-start-
+            const startMatch = line.match(/^\[(.*?)\]-start-$/);
+            if (startMatch) {
+                currentChapter = startMatch[1];
+                continue;
+            }
+            // Check for chapter end like [第一章]-end-
+            const endMatch = line.match(/^\[(.*?)\]-end-$/);
+            if (endMatch) {
+                currentChapter = null;
+                continue;
+            }
+
             // e.g. [世界王卡片][罕見]	創世權能	運氣值, 護盾穿透
             let match = line.match(/\[(.*?)\]\[(.*?)\]\s+(.*?)(?:\t.*)?$/);
             if (!match) match = line.match(/\[(.*?)\]\[(.*?)\]\s+(.*)/);
@@ -57,7 +71,8 @@ function parseCardData(text) {
                     rarity: match[2],
                     name: match[3].trim().split('\t')[0].trim(), // To handle possible extra tabs
                     attributes: [],
-                    levels: []
+                    levels: [],
+                    chapter: currentChapter
                 };
                 cardsData.push(currentCard);
             }
@@ -121,10 +136,23 @@ function populateFilters() {
     });
 }
 
+// Helper to get card color
+function getTitleColor(card) {
+    if (card.type === '世界王卡片') return '#00EC00';
+    if (card.type === '活動卡片') return '#F00078';
+    if (card.chapter === '第一章') return '#F9F900';
+    if (card.chapter === '第二章') return '#FF0000';
+    if (card.chapter === '第三章') return '#D200D2';
+    return 'inherit';
+}
+
 function createCardHTML(card, isSimMode = false) {
     const defaultLevel = card.levels.length - 1; // Default to max level (usually Lv.5)
     const currentLvlData = card.levels[defaultLevel].data;
     const isEquipped = equippedCards.some(ec => ec.card.id === card.id);
+    const isFull = equippedCards.length >= MAX_SLOTS;
+    const isDisabled = isEquipped || isFull;
+    const btnText = isEquipped ? '已裝備' : (isFull ? '欄位已滿' : '裝備此卡片');
     
     let attrsHtml = '';
     for (const [attr, val] of Object.entries(currentLvlData)) {
@@ -141,10 +169,12 @@ function createCardHTML(card, isSimMode = false) {
         levelOptions += `<option value="${idx}" ${idx === defaultLevel ? 'selected' : ''}>${lvl.level}</option>`;
     });
 
+    const titleStyle = `style="color: ${getTitleColor(card)};"`;
+
     return `
         <div class="card ${isSimMode ? 'sim-card' : ''} ${isEquipped && isSimMode ? 'equipped' : ''}" data-id="${card.id}" data-rarity="${card.rarity}">
             <div class="card-header">
-                <div class="card-title">${card.name}</div>
+                <div class="card-title" ${titleStyle}>${card.name}</div>
                 <div class="card-tags">
                     <span class="tag">${card.type}</span>
                     <span class="tag">${card.rarity}</span>
@@ -158,8 +188,8 @@ function createCardHTML(card, isSimMode = false) {
                     <select class="level-selector" onclick="event.stopPropagation()" ${isEquipped ? 'disabled' : ''}>
                         ${levelOptions}
                     </select>
-                    <button class="equip-btn" onclick="equipCard('${card.id}', event)" ${isEquipped ? 'disabled' : ''}>
-                        ${isEquipped ? '已裝備' : '裝備此卡片'}
+                    <button class="equip-btn" onclick="equipCard('${card.id}', event)" ${isDisabled ? 'disabled' : ''}>
+                        ${btnText}
                     </button>
                 ` : `
                     <select class="level-selector" onchange="updateCardDisplay(this, '${card.id}')">
@@ -304,10 +334,12 @@ function renderSlots() {
     for (let i = 0; i < MAX_SLOTS; i++) {
         if (i < equippedCards.length) {
             const equipped = equippedCards[i];
+            const titleColor = getTitleColor(equipped.card);
+
             slotsContainer.insertAdjacentHTML('beforeend', `
                 <div class="slot filled">
                     <div class="slot-info">
-                        <span class="slot-name">${equipped.card.name}</span>
+                        <span class="slot-name" style="color: ${titleColor};">${equipped.card.name}</span>
                         <span class="slot-level">${equipped.levelName}</span>
                     </div>
                     <button class="remove-btn" onclick="removeCard('${equipped.instanceId}')">移除</button>
