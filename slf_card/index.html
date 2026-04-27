@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SFL 卡片系統</title>
+    <meta name="description" content="遊戲卡片圖鑑與屬性模擬系統">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <header class="glass-header">
+            <h1>SFL 卡片資料庫</h1>
+            <nav class="tabs">
+                <button class="tab-btn active" data-target="dex-view">卡片圖鑑</button>
+                <button class="tab-btn" data-target="sim-view">屬性模擬</button>
+            </nav>
+        </header>
+
+        <main class="main-content">
+            <!-- 視圖 1: 卡片圖鑑 -->
+            <section id="dex-view" class="view-section active">
+                <div class="controls glass-panel">
+                    <div class="filter-group">
+                        <label for="attr-filter">屬性篩選：</label>
+                        <select id="attr-filter">
+                            <option value="all">全部屬性</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="sort-attr">排序屬性：</label>
+                        <select id="sort-attr">
+                            <option value="original">原始排序</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="sort-order">排序方式：</label>
+                        <select id="sort-order">
+                            <option value="desc">降序 (大 → 小)</option>
+                            <option value="asc">升序 (小 → 大)</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="cards-grid" id="cards-container">
+                    <!-- 卡片將由 JS 動態產生 -->
+                    <div class="loading">載入卡片資料中...</div>
+                </div>
+            </section>
+
+            <!-- 視圖 2: 屬性模擬 -->
+            <section id="sim-view" class="view-section">
+                <div class="sim-container">
+                    <div class="sim-slots glass-panel">
+                        <h2>已裝備卡片 (最多 5 張)</h2>
+                        <div class="slots-grid" id="slots-container">
+                            <!-- 5個空位 -->
+                        </div>
+                    </div>
+
+                    <div class="sim-stats glass-panel">
+                        <h2>總合屬性</h2>
+                        <div id="total-stats" class="stats-list">
+                            <div class="empty-state">尚未裝備任何卡片</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-panel sim-selector">
+                    <h3>選擇卡片裝備</h3>
+                    <div class="controls-mini mb-4">
+                        <div class="filter-group">
+                            <label for="sim-attr-filter">屬性篩選：</label>
+                            <select id="sim-attr-filter">
+                                <option value="all">全部屬性</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label for="sim-sort-attr">排序屬性：</label>
+                            <select id="sim-sort-attr">
+                                <option value="original">原始排序</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label for="sim-sort-order">排序方式：</label>
+                            <select id="sim-sort-order">
+                                <option value="desc">降序 (大 → 小)</option>
+                                <option value="asc">升序 (小 → 大)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="cards-grid sim-cards-grid" id="sim-cards-container">
+                        <!-- 供選擇的卡片 -->
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
