@@ -17,6 +17,7 @@ const slotsContainer = document.getElementById('slots-container');
 const totalStatsContainer = document.getElementById('total-stats');
 const tabBtns = document.querySelectorAll('.tab-btn');
 const viewSections = document.querySelectorAll('.view-section');
+const backToTopBtn = document.getElementById('back-to-top');
 
 // Initialization
 async function init() {
@@ -434,6 +435,22 @@ function setupEventListeners() {
     simAttrFilter.addEventListener('change', () => renderSimCards());
     simSortAttr.addEventListener('change', () => renderSimCards());
     simSortOrder.addEventListener('change', () => renderSimCards());
+    
+    // Back to Top Scroll Logic
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 300) {
+            backToTopBtn.classList.add('visible');
+        } else {
+            backToTopBtn.classList.remove('visible');
+        }
+    });
+
+    backToTopBtn.addEventListener('click', () => {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    });
 }
 
 // Start
