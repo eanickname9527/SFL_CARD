@@ -131,6 +131,10 @@ h1 {
     align-items: center;
 }
 
+.push-right {
+    margin-left: auto;
+}
+
 .mb-4 {
     margin-bottom: 1.5rem;
 }

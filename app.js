@@ -18,6 +18,8 @@ const totalStatsContainer = document.getElementById('total-stats');
 const tabBtns = document.querySelectorAll('.tab-btn');
 const viewSections = document.querySelectorAll('.view-section');
 const backToTopBtn = document.getElementById('back-to-top');
+const categoryFilter = document.getElementById('category-filter');
+const simCategoryFilter = document.getElementById('sim-category-filter');
 
 // Initialization
 function init() {
@@ -107,6 +109,7 @@ function convertNewDB() {
             type: type,
             rarity: card.quality,
             name: displayName,
+            fullName: card.name,
             attributes: Array.from(allCardAttrs),
             levels: levels,
             chapter: chapter
@@ -138,6 +141,30 @@ function populateFilters() {
         option2.textContent = attr;
         simAttrFilter.appendChild(option2);
     });
+
+    // Category populating
+    if (window.SORT_CARD_DB) {
+        const categoryMap = {
+            'world_boss': '世界王',
+            'event': '活動',
+            'ch1': '第一章',
+            'ch2': '第二章',
+            'ch3': '第三章'
+        };
+        
+        window.SORT_CARD_DB.forEach(cat => {
+            const displayName = categoryMap[cat.id] || cat.id;
+            const option1 = document.createElement('option');
+            option1.value = cat.id;
+            option1.textContent = displayName;
+            categoryFilter.appendChild(option1);
+            
+            const option2 = document.createElement('option');
+            option2.value = cat.id;
+            option2.textContent = displayName;
+            simCategoryFilter.appendChild(option2);
+        });
+    }
 }
 
 // Helper to get card color
@@ -214,13 +241,22 @@ function createCardHTML(card, isSimMode = false, filterAttr = 'all', sortAttr = 
 
 function renderDexCards() {
     const filterAttr = attrFilter.value;
+    const filterCat = categoryFilter.value;
     const sortBy = sortAttr.value;
     const order = sortOrder.value;
 
     dexCardsContainer.innerHTML = '';
-    let filteredCards = cardsData.filter(card => 
-        filterAttr === 'all' || card.attributes.includes(filterAttr)
-    );
+    let filteredCards = cardsData.filter(card => {
+        const matchesAttr = filterAttr === 'all' || card.attributes.includes(filterAttr);
+        let matchesCat = true;
+        if (filterCat !== 'all' && window.SORT_CARD_DB) {
+            const catData = window.SORT_CARD_DB.find(c => c.id === filterCat);
+            if (catData) {
+                matchesCat = catData.cardname.includes(card.fullName);
+            }
+        }
+        return matchesAttr && matchesCat;
+    });
 
     // Sorting
     if (sortBy !== 'original') {
@@ -250,14 +286,23 @@ function renderDexCards() {
 
 function renderSimCards() {
     const filterAttr = simAttrFilter.value;
+    const filterCat = simCategoryFilter.value;
     const sortBy = simSortAttr.value;
     const order = simSortOrder.value;
 
     simCardsContainer.innerHTML = '';
     
-    let filteredCards = cardsData.filter(card => 
-        filterAttr === 'all' || card.attributes.includes(filterAttr)
-    );
+    let filteredCards = cardsData.filter(card => {
+        const matchesAttr = filterAttr === 'all' || card.attributes.includes(filterAttr);
+        let matchesCat = true;
+        if (filterCat !== 'all' && window.SORT_CARD_DB) {
+            const catData = window.SORT_CARD_DB.find(c => c.id === filterCat);
+            if (catData) {
+                matchesCat = catData.cardname.includes(card.fullName);
+            }
+        }
+        return matchesAttr && matchesCat;
+    });
 
     // Sorting
     if (sortBy !== 'original') {
@@ -439,10 +484,12 @@ function setupEventListeners() {
 
     // Filters
     attrFilter.addEventListener('change', () => renderDexCards());
+    categoryFilter.addEventListener('change', () => renderDexCards());
     sortAttr.addEventListener('change', () => renderDexCards());
     sortOrder.addEventListener('change', () => renderDexCards());
 
     simAttrFilter.addEventListener('change', () => renderSimCards());
+    simCategoryFilter.addEventListener('change', () => renderSimCards());
     simSortAttr.addEventListener('change', () => renderSimCards());
     simSortOrder.addEventListener('change', () => renderSimCards());
     
