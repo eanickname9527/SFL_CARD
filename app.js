@@ -20,12 +20,13 @@ const viewSections = document.querySelectorAll('.view-section');
 const backToTopBtn = document.getElementById('back-to-top');
 
 // Initialization
-async function init() {
+function init() {
     try {
-        const response = await fetch('card_info.txt');
-        if (!response.ok) throw new Error('Failed to load card_info.txt');
-        const text = await response.text();
-        parseCardData(text);
+        checkUpdate();
+        if (!window.SFL_CARDS_DB) {
+            throw new Error('equips.js not loaded properly');
+        }
+        convertNewDB();
         populateFilters();
         renderDexCards();
         renderSimCards();
@@ -34,81 +35,83 @@ async function init() {
         setupEventListeners();
     } catch (error) {
         console.error('Error loading data:', error);
-        dexCardsContainer.innerHTML = `<div class="loading" style="color: #ef4444;">載入資料失敗。請確保 card_info.txt 存在於同一目錄下。</div>`;
+        dexCardsContainer.innerHTML = `<div class="loading" style="color: #ef4444;">載入資料失敗。請確保 data/equips.js 已正確載入。</div>`;
     }
 }
 
-// Data Parsing
-function parseCardData(text) {
-    const lines = text.split('\n');
-    let currentCard = null;
-    let currentChapter = null;
+// Data Conversion from equips.js
+function convertNewDB() {
+    const ATTR_MAPPING = {
+        'luck': '運氣值',
+        'penetrate': '護盾穿透',
+        'hp': '生命基值',
+        'shield': '護盾值',
+        'star_point': '星值',
+        'demonic_miasma_reduce': '魔瘴侵蝕',
+        'attack': '攻擊力',
+        'accuracy': '命中率',
+        'other_bonus': '額外傷害',
+        'atk_speed': '攻擊速度',
+        'evade': '迴避率'
+    };
 
-    for (let i = 0; i < lines.length; i++) {
-        let line = lines[i].trim();
-        if (!line) continue;
+    const PERCENT_ATTRS = ['accuracy', 'other_bonus', 'evade'];
 
-        if (line.startsWith('[')) {
-            // Check for chapter start like [第一章]-start-
-            const startMatch = line.match(/^\[(.*?)\]-start-$/);
-            if (startMatch) {
-                currentChapter = startMatch[1];
-                continue;
-            }
-            // Check for chapter end like [第一章]-end-
-            const endMatch = line.match(/^\[(.*?)\]-end-$/);
-            if (endMatch) {
-                currentChapter = null;
-                continue;
-            }
+    cardsData = window.SFL_CARDS_DB.map(card => {
+        // Extract type from name: [世界王卡片]湮滅本質 -> type: 世界王卡片, name: 湮滅本質
+        const typeMatch = card.name.match(/^\[(.*?)\](.*)$/);
+        const type = typeMatch ? typeMatch[1] : '其他';
+        const displayName = typeMatch ? typeMatch[2].trim() : card.name;
 
-            // e.g. [世界王卡片][罕見]	創世權能	運氣值, 護盾穿透
-            let match = line.match(/\[(.*?)\]\[(.*?)\]\s+(.*?)(?:\t.*)?$/);
-            if (!match) match = line.match(/\[(.*?)\]\[(.*?)\]\s+(.*)/);
-            if (match) {
-                currentCard = {
-                    id: 'card_' + cardsData.length,
-                    type: match[1],
-                    rarity: match[2],
-                    name: match[3].trim().split('\t')[0].trim(), // To handle possible extra tabs
-                    attributes: [],
-                    levels: [],
-                    chapter: currentChapter
-                };
-                cardsData.push(currentCard);
-            }
-        } else if (line.startsWith('等級')) {
-            if (currentCard) {
-                let parts = line.split('\t').map(s => s.trim()).filter(s => s);
-                parts.shift(); // remove "等級"
-                if (parts.length > 1) {
-                    let lastPart = parts[parts.length - 1];
-                    // Clean up trailing concatenated list if it matches the first property
-                    if (lastPart.includes(parts[0])) {
-                        parts.pop();
-                    }
-                }
-                currentCard.attributes = parts;
-                parts.forEach(attr => allAttributes.add(attr));
-            }
-        } else if (line.startsWith('Lv.')) {
-            if (currentCard) {
-                let parts = line.split('\t').map(s => s.trim()).filter(s => s);
-                let level = parts.shift();
-                
-                // Extra safety: if the last element is the comma separated list
-                if (parts.length > currentCard.attributes.length) {
-                    parts.pop();
-                }
-
-                let levelData = {};
-                currentCard.attributes.forEach((attr, index) => {
-                    levelData[attr] = parts[index] || "0";
-                });
-                currentCard.levels.push({ level: level, data: levelData });
-            }
+        // Determine chapter based on original logic or known patterns
+        let chapter = null;
+        if (card.name.includes('七罪帝國') || card.name.includes('他化自在天') || card.name.includes('失樂園') || card.name.includes('卡達斯聖山') || card.name.includes('世界根源')) {
+            chapter = '第二章';
+        } else if (card.name.includes('伊甸：星空最前線') || card.name.includes('埃雷西斯星系') || card.name.includes('伊歐斯菲亞') || card.name.includes('天道太合星域') || card.name.includes('常世原')) {
+            chapter = '第三章';
+        } else if (type === '副本卡片') {
+            chapter = '第一章'; // Default for other dungeon cards
         }
-    }
+
+        // Extract attributes from all levels to ensure we have the full set
+        const allCardAttrs = new Set();
+        const levels = [];
+        
+        // Value levels are 1, 2, 3, 4, 5
+        for (let i = 1; i <= 5; i++) {
+            const levelData = card.value[i.toString()];
+            if (!levelData) continue;
+
+            const mappedData = {};
+            Object.entries(levelData).forEach(([key, val]) => {
+                const chineseKey = ATTR_MAPPING[key] || key;
+                allCardAttrs.add(chineseKey);
+                allAttributes.add(chineseKey);
+
+                // Format value
+                let displayVal = val;
+                if (PERCENT_ATTRS.includes(key)) {
+                    displayVal = (val * 100).toFixed(1).replace(/\.0$/, '') + '%';
+                }
+                mappedData[chineseKey] = displayVal.toString();
+            });
+
+            levels.push({
+                level: `Lv.${i}`,
+                data: mappedData
+            });
+        }
+
+        return {
+            id: card.id,
+            type: type,
+            rarity: card.quality,
+            name: displayName,
+            attributes: Array.from(allCardAttrs),
+            levels: levels,
+            chapter: chapter
+        };
+    });
 }
 
 // UI Rendering
@@ -458,6 +461,24 @@ function setupEventListeners() {
             behavior: 'smooth'
         });
     });
+}
+
+// Update Detection
+function checkUpdate() {
+    const versionElem = document.getElementById('current-version');
+    if (!versionElem) return;
+    
+    const currentVersion = versionElem.textContent.trim();
+    // Skip if placeholders are not replaced (local development)
+    if (currentVersion.includes('{{')) return;
+    
+    const storedVersion = localStorage.getItem('sfl_card_version');
+    if (storedVersion && storedVersion !== currentVersion) {
+        console.log(`[System] New version detected: ${currentVersion}. Previous: ${storedVersion}`);
+        // Optionally notify user or clear specific cache
+        // alert(`系統已更新至版本: ${currentVersion}`);
+    }
+    localStorage.setItem('sfl_card_version', currentVersion);
 }
 
 // Start
