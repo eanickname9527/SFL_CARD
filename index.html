@@ -45,6 +45,12 @@
                             <option value="asc">升序 (小 → 大)</option>
                         </select>
                     </div>
+                    <div class="filter-group push-right">
+                        <label for="category-filter">章節篩選：</label>
+                        <select id="category-filter">
+                            <option value="all">全部分類</option>
+                        </select>
+                    </div>
                 </div>
 
                 <div class="cards-grid" id="cards-container">
@@ -93,6 +99,12 @@
                                 <option value="asc">升序 (小 → 大)</option>
                             </select>
                         </div>
+                        <div class="filter-group push-right">
+                            <label for="sim-category-filter">章節篩選：</label>
+                            <select id="sim-category-filter">
+                                <option value="all">全部分類</option>
+                            </select>
+                        </div>
                     </div>
                     <div class="cards-grid sim-cards-grid" id="sim-cards-container">
                         <!-- 供選擇的卡片 -->
@@ -105,9 +117,9 @@
     <footer class="main-footer">
         <div class="footer-content">
             <div class="version-info">
-                <span>版本編號: <span id="current-version">f5b94c0</span></span>
+                <span>版本編號: <span id="current-version">a3280e6</span></span>
                 <span class="divider">|</span>
-                <span>更新時間: 2026-05-14 16:58</span>
+                <span>更新時間: 2026-05-14 17:16</span>
             </div>
         </div>
     </footer>
@@ -119,6 +131,7 @@
         </svg>
     </button>
     <script src="data/equips.js"></script>
+    <script src="data/sort.js"></script>
     <script src="app.js"></script>
 </body>
 
