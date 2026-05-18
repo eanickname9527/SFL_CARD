@@ -1993,7 +1993,7 @@ window.SFL_CARDS_DB = [
                 "penetrate": 200
             },
             "2": {
-                "luck": 2000,
+                "luck": 200,
                 "penetrate": 200
             },
             "3": {
