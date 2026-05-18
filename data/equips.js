@@ -565,7 +565,7 @@ window.SFL_CARDS_DB = [
             "3": {
                 "attack": 40,
                 "shield": 150,
-                "evade": 0.2,
+                "evade": 0.20,
                 "penetrate": 30
             },
             "4": {
@@ -712,7 +712,7 @@ window.SFL_CARDS_DB = [
             "3": {
                 "atk_speed": 50,
                 "accuracy": 0.2,
-                "evade": 0.3,
+                "evade": 0.30,
                 "penetrate": 50
             },
             "4": {
@@ -1812,7 +1812,7 @@ window.SFL_CARDS_DB = [
     },
     {
         "id": "card_sakura_academy",
-        "name": "[副本卡片]常世原：櫻落學院",
+        "name": "[副本卡片]常世原：落櫻學院",
         "quality": "罕見",
         "value": {
             "1": {
@@ -1900,27 +1900,27 @@ window.SFL_CARDS_DB = [
         "quality": "傳說",
         "value": {
             "1": {
-                "accuracy": 0.6,
+                "accuracy": 1.1,
                 "evade": 1.0,
                 "penetrate": 200
             },
             "2": {
-                "accuracy": 0.7,
+                "accuracy": 1.2,
                 "evade": 1.0,
                 "penetrate": 200
             },
             "3": {
-                "accuracy": 0.8,
+                "accuracy": 1.3,
                 "evade": 1.0,
                 "penetrate": 200
             },
             "4": {
-                "accuracy": 0.9,
+                "accuracy": 1.4,
                 "evade": 1.0,
                 "penetrate": 200
             },
             "5": {
-                "accuracy": 1.0,
+                "accuracy": 1.5,
                 "evade": 1.0,
                 "penetrate": 200,
                 "other_bonus": 0.3
@@ -1928,7 +1928,7 @@ window.SFL_CARDS_DB = [
         }
     },
     {
-        "id": "card_outer_god_asylum",
+        "id": "card_outer_god_containment",
         "name": "[副本卡片]阿卡夏星海：外神收容所",
         "quality": "罕見",
         "value": {
@@ -1954,5 +1954,89 @@ window.SFL_CARDS_DB = [
                 "other_bonus": 0.25
             }
         }
+    },
+    {
+        "id": "card_heaven_eye",
+        "name": "[副本卡片]阿卡夏星海：天眼",
+        "quality": "罕見",
+        "value": {
+            "1": {
+                "luck": 110,
+                "atk_speed": 110
+            },
+            "2": {
+                "luck": 120,
+                "atk_speed": 120
+            },
+            "3": {
+                "luck": 130,
+                "atk_speed": 130
+            },
+            "4": {
+                "luck": 140,
+                "atk_speed": 140
+            },
+            "5": {
+                "luck": 150,
+                "atk_speed": 150,
+                "other_bonus": 0.25
+            }
+        }
+    },
+    {
+        "id": "card_eternal_archive",
+        "name": "[副本卡片]阿卡夏星海：永恆典藏庫",
+        "quality": "罕見",
+        "value": {
+            "1": {
+                "luck": 150,
+                "penetrate": 200
+            },
+            "2": {
+                "luck": 2000,
+                "penetrate": 200
+            },
+            "3": {
+                "luck": 250,
+                "penetrate": 200
+            },
+            "4": {
+                "luck": 300,
+                "penetrate": 200
+            },
+            "5": {
+                "luck": 350,
+                "penetrate": 200,
+                "other_bonus": 0.25
+            }
+        }
+    },
+    {
+        "id": "dungeon_Infinite",
+        "name": "[副本卡片]阿卡夏星海:「無限」書錄星軌之所",
+        "quality": "傳說",
+        "value": {
+            "1": {
+                "attack": 100,
+                "penetrate": 150
+            },
+            "2": {
+                "attack": 150,
+                "penetrate": 200
+            },
+            "3": {
+                "attack": 200,
+                "penetrate": 250
+            },
+            "4": {
+                "attack": 250,
+                "penetrate": 300
+            },
+            "5": {
+                "attack": 300,
+                "penetrate": 350,
+                "other_bonus": 0.3
+            }
+        }
     }
-];
+]
