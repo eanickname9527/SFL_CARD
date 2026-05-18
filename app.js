@@ -69,7 +69,7 @@ function convertNewDB() {
         let chapter = null;
         if (card.name.includes('七罪帝國') || card.name.includes('他化自在天') || card.name.includes('失樂園') || card.name.includes('卡達斯聖山') || card.name.includes('世界根源')) {
             chapter = '第二章';
-        } else if (card.name.includes('伊甸：星空最前線') || card.name.includes('埃雷西斯星系') || card.name.includes('伊歐斯菲亞') || card.name.includes('天道太合星域') || card.name.includes('常世原')) {
+        } else if (card.name.includes('伊甸：星空最前線') || card.name.includes('埃雷西斯星系') || card.name.includes('伊歐斯菲亞') || card.name.includes('天道太合星域') || card.name.includes('常世原') || card.name.includes('阿卡夏星海')) {
             chapter = '第三章';
         } else if (type === '副本卡片') {
             chapter = '第一章'; // Default for other dungeon cards
